@@ -9,7 +9,7 @@ from playwright.sync_api import sync_playwright
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TPL = os.path.join(HERE, "templates")
-FPS, SECS = 30, 9
+FPS, SECS = 30, 10
 
 def fill(tpl, mapping):
     out = tpl
@@ -65,6 +65,7 @@ def render_slides(pg, post, out_dir, work, slides):
         page = fill(tpl, {
             "THEME": s.get("theme", ""),
             "NUM": s.get("num", f"{i} / {len(slides)}"),
+            "PAUSE": '<div class="pause">STOP HERE FOR A MINUTE</div>' if s.get("pause") else "",
             "KICKER": html.escape(s.get("kicker", "")),
             "HEADLINE": html.escape(s["headline"]),
             "HSIZE": s.get("hsize") or hsize(s["headline"]),
@@ -82,17 +83,17 @@ def render_slides(pg, post, out_dir, work, slides):
     return files
 
 def carousel_slides(post):
-    s = [{"kicker": f"{post['topic']} · {lvl}", "headline": q, "num": f"{i} / 4"} for i, (lvl, q) in enumerate(post["levels"], 1)]
-    s.append({"theme": "dark", "kicker": "SEVEN FREE QUESTIONS", "headline": "Seven more that take longer than a minute.", "num": "4 / 4",
+    s = [{"kicker": f"{post['topic']} · {lvl}", "headline": q, "num": f"{i} / 4", "pause": i == 1} for i, (lvl, q) in enumerate(post["levels"], 1)]
+    s.append({"theme": "dark", "kicker": "SEVEN FREE QUESTIONS", "headline": "Seven more to stop for.", "num": "4 / 4",
               "sub": "A free starter set: one question per page, one follow-up that makes it harder, room to write.<br><br><b>Link in bio.</b>", "subtop": "860"})
     return s
 
 def reading_slides(post):
-    s = [{"kicker": "READING YOUR ANSWER", "headline": post["question"], "num": "1 / 5",
+    s = [{"kicker": "READING YOUR ANSWER", "headline": post["question"], "num": "1 / 5", "pause": True,
           "sub": "Three answers that come fast, and what each one tends to protect.", "subtop": "960"}]
     for i, (ans, note) in enumerate(post["answers"], 2):
         s.append({"kicker": f"A FAST ANSWER · {i-1}", "headline": ans, "num": f"{i} / 5", "sub": note, "subtop": "860"})
-    s.append({"theme": "dark", "kicker": "SEVEN FREE QUESTIONS", "headline": "Seven more that take longer than a minute.", "num": "5 / 5",
+    s.append({"theme": "dark", "kicker": "SEVEN FREE QUESTIONS", "headline": "Seven more to stop for.", "num": "5 / 5",
               "sub": "A free starter set: one question per page, one follow-up that makes it harder, room to write.<br><br><b>Link in bio.</b>", "subtop": "860"})
     return s
 

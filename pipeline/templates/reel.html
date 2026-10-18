@@ -9,6 +9,7 @@
   .grain{position:absolute;inset:0;opacity:.09;mix-blend-mode:overlay;}
   .mark{position:absolute;top:150px;left:0;right:0;text-align:center;letter-spacing:.42em;font-size:30px;font-weight:600;color:#e9dfd2;opacity:.85;}
   .day{position:absolute;top:210px;left:0;right:0;text-align:center;font-size:26px;letter-spacing:.2em;color:#b7a996;opacity:.7;}
+  .pause{position:absolute;left:110px;top:470px;font-size:24px;letter-spacing:.24em;color:#c2743a;font-weight:600;opacity:0;}
   .q{position:absolute;left:110px;right:110px;top:560px;font-family:'Lora',serif;font-size:{{QSIZE}}px;line-height:1.22;color:#f4ede3;font-weight:500;}
   .q span{display:inline-block;opacity:0;transform:translateY(18px);margin-right:.26em;will-change:opacity,transform;}
   .fu-label{position:absolute;left:110px;top:1210px;font-size:24px;letter-spacing:.24em;color:#c2743a;font-weight:600;opacity:0;}
@@ -24,11 +25,12 @@
   <svg class="grain" width="1080" height="1920"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" seed="{{SEED}}"/></filter><rect width="1080" height="1920" filter="url(#n)"/></svg>
   <div class="mark">HARDER QUESTIONS</div>
   <div class="day">DAY {{DAY}}</div>
+  <div class="pause" id="pause">STOP HERE FOR A MINUTE</div>
   <div class="q" id="q"></div>
   <div class="fu-label" id="ful">IF YOUR ANSWER CAME FAST</div>
   <div class="fu" id="fu">{{FOLLOWUP}}</div>
   <div class="rule" id="rule"></div>
-  <div class="cta" id="cta">Sit with it for a minute.<br><b>7 free questions</b> &middot; link in bio</div>
+  <div class="cta" id="cta">Scroll when you have an answer.<br><b>7 free questions</b> &middot; link in bio</div>
   <div class="ai">WRITTEN BY AN AI &middot; CHOSEN BY A HUMAN</div>
 </div>
 <script>
@@ -41,11 +43,12 @@
   window.render = function(t){
     document.getElementById('g1').style.transform = `translate(${Math.sin(t*0.45+seed)*80}px, ${Math.cos(t*0.35+seed)*60}px)`;
     document.getElementById('g2').style.transform = `translate(${Math.cos(t*0.4+seed)*70}px, ${Math.sin(t*0.3+seed)*50}px)`;
-    words.forEach((s,i)=>{ const p = ease(clamp((t-0.6-i*0.2)/0.45,0,1)); s.style.opacity=p; s.style.transform=`translateY(${18*(1-p)}px)`; });
-    const f = ease(clamp((t-4.4)/0.7,0,1));
+    document.getElementById('pause').style.opacity = ease(clamp((t-0.2)/0.5,0,1));
+    words.forEach((s,i)=>{ const p = ease(clamp((t-1.0-i*0.2)/0.45,0,1)); s.style.opacity=p; s.style.transform=`translateY(${18*(1-p)}px)`; });
+    const f = ease(clamp((t-4.8)/0.7,0,1));
     document.getElementById('ful').style.opacity = f;
     document.getElementById('fu').style.opacity = f;
-    const r = ease(clamp((t-6.4)/0.8,0,1)); document.getElementById('rule').style.width = (120*r)+'px';
-    document.getElementById('cta').style.opacity = ease(clamp((t-6.9)/0.7,0,1));
+    const r = ease(clamp((t-6.8)/0.8,0,1)); document.getElementById('rule').style.width = (120*r)+'px';
+    document.getElementById('cta').style.opacity = ease(clamp((t-7.3)/0.7,0,1));
   };
 </script></body></html>
