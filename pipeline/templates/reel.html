@@ -1,0 +1,51 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#15120f;font-family:'Inter',sans-serif;}
+  .stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#15120f;}
+  .glow{position:absolute;border-radius:50%;filter:blur(120px);opacity:.55;will-change:transform;}
+  .g1{width:900px;height:900px;background:#c2743a;left:-200px;top:200px;}
+  .g2{width:800px;height:800px;background:#3b4a6b;right:-250px;bottom:150px;}
+  .grain{position:absolute;inset:0;opacity:.09;mix-blend-mode:overlay;}
+  .mark{position:absolute;top:150px;left:0;right:0;text-align:center;letter-spacing:.42em;font-size:30px;font-weight:600;color:#e9dfd2;opacity:.85;}
+  .day{position:absolute;top:210px;left:0;right:0;text-align:center;font-size:26px;letter-spacing:.2em;color:#b7a996;opacity:.7;}
+  .q{position:absolute;left:110px;right:110px;top:560px;font-family:'Lora',serif;font-size:{{QSIZE}}px;line-height:1.22;color:#f4ede3;font-weight:500;}
+  .q span{display:inline-block;opacity:0;transform:translateY(18px);margin-right:.26em;will-change:opacity,transform;}
+  .fu-label{position:absolute;left:110px;top:1210px;font-size:24px;letter-spacing:.24em;color:#c2743a;font-weight:600;opacity:0;}
+  .fu{position:absolute;left:110px;right:110px;top:1260px;font-family:'Lora',serif;font-style:italic;font-size:46px;line-height:1.35;color:#e9dfd2;opacity:0;}
+  .rule{position:absolute;left:110px;top:1500px;height:2px;width:0;background:#c2743a;}
+  .cta{position:absolute;left:110px;right:110px;top:1540px;font-size:30px;line-height:1.5;color:#cfc2b2;opacity:0;}
+  .cta b{color:#f4ede3;font-weight:600;}
+  .ai{position:absolute;bottom:120px;left:0;right:0;text-align:center;font-size:22px;letter-spacing:.18em;color:#8c7f6f;}
+</style></head>
+<body><div class="stage">
+  <div class="glow g1" id="g1"></div>
+  <div class="glow g2" id="g2"></div>
+  <svg class="grain" width="1080" height="1920"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" seed="{{SEED}}"/></filter><rect width="1080" height="1920" filter="url(#n)"/></svg>
+  <div class="mark">HARDER QUESTIONS</div>
+  <div class="day">DAY {{DAY}}</div>
+  <div class="q" id="q"></div>
+  <div class="fu-label" id="ful">IF YOUR ANSWER CAME FAST</div>
+  <div class="fu" id="fu">{{FOLLOWUP}}</div>
+  <div class="rule" id="rule"></div>
+  <div class="cta" id="cta">Sit with it for a minute.<br><b>7 free questions</b> &middot; link in bio</div>
+  <div class="ai">WRITTEN BY AN AI &middot; CHOSEN BY A HUMAN</div>
+</div>
+<script>
+  const text = {{QUESTION_JSON}};
+  const q = document.getElementById('q');
+  const words = text.split(' ').map(w => { const s = document.createElement('span'); s.textContent = w; q.appendChild(s); return s; });
+  const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+  const ease = x => 1-Math.pow(1-x,3);
+  const seed = {{SEED}};
+  window.render = function(t){
+    document.getElementById('g1').style.transform = `translate(${Math.sin(t*0.45+seed)*80}px, ${Math.cos(t*0.35+seed)*60}px)`;
+    document.getElementById('g2').style.transform = `translate(${Math.cos(t*0.4+seed)*70}px, ${Math.sin(t*0.3+seed)*50}px)`;
+    words.forEach((s,i)=>{ const p = ease(clamp((t-0.6-i*0.2)/0.45,0,1)); s.style.opacity=p; s.style.transform=`translateY(${18*(1-p)}px)`; });
+    const f = ease(clamp((t-4.4)/0.7,0,1));
+    document.getElementById('ful').style.opacity = f;
+    document.getElementById('fu').style.opacity = f;
+    const r = ease(clamp((t-6.4)/0.8,0,1)); document.getElementById('rule').style.width = (120*r)+'px';
+    document.getElementById('cta').style.opacity = ease(clamp((t-6.9)/0.7,0,1));
+  };
+</script></body></html>

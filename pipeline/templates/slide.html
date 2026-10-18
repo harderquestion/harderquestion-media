@@ -1,0 +1,39 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  html,body{margin:0;width:1080px;height:1350px;overflow:hidden;font-family:'Inter',sans-serif;}
+  .stage{position:relative;width:1080px;height:1350px;overflow:hidden;background:#f3ece2;color:#1f1a15;}
+  .stage.dark{background:#15120f;color:#f4ede3;}
+  .glow{position:absolute;border-radius:50%;filter:blur(140px);opacity:.5;}
+  .g1{width:700px;height:700px;background:#e3b48b;left:-180px;top:-150px;}
+  .g2{width:600px;height:600px;background:#b9c3d9;right:-200px;bottom:-120px;}
+  .dark .g1{background:#c2743a;opacity:.55;}
+  .dark .g2{background:#3b4a6b;opacity:.55;}
+  .grain{position:absolute;inset:0;opacity:.08;mix-blend-mode:overlay;}
+  .mark{position:absolute;top:90px;left:100px;letter-spacing:.42em;font-size:26px;font-weight:600;color:#3b3127;}
+  .dark .mark{color:#e9dfd2;}
+  .num{position:absolute;top:84px;right:100px;font-size:26px;letter-spacing:.2em;color:#8c7f6f;}
+  .kicker{position:absolute;left:100px;top:380px;font-size:28px;letter-spacing:.18em;color:#b06a34;font-weight:600;}
+  .dark .kicker{color:#c2743a;}
+  .h{position:absolute;left:100px;right:100px;top:440px;font-family:'Lora',serif;font-size:{{HSIZE}}px;line-height:1.15;font-weight:500;}
+  .sub{position:absolute;left:100px;right:100px;top:{{SUBTOP}}px;font-size:30px;line-height:1.55;color:#6f6356;}
+  .dark .sub{color:#cfc2b2;}
+  .sub b{color:#1f1a15;font-weight:600;}
+  .dark .sub b{color:#f4ede3;}
+  .foot{position:absolute;left:100px;right:100px;bottom:110px;display:flex;justify-content:space-between;font-size:26px;color:#6f6356;}
+  .dark .foot{color:#8c7f6f;}
+  .foot b{color:#1f1a15;font-weight:600;}
+  .dark .foot b{color:#f4ede3;}
+  .arrow{position:absolute;right:100px;bottom:200px;font-size:60px;color:#b06a34;}
+</style></head>
+<body><div class="stage {{THEME}}">
+  <div class="glow g1"></div><div class="glow g2"></div>
+  <svg class="grain" width="1080" height="1350"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="1080" height="1350" filter="url(#n)"/></svg>
+  <div class="mark">HARDER QUESTIONS</div>
+  <div class="num">{{NUM}}</div>
+  <div class="kicker">{{KICKER}}</div>
+  <div class="h">{{HEADLINE}}</div>
+  <div class="sub">{{SUB}}</div>
+  {{ARROW}}
+  <div class="foot"><span>Written by an AI &middot; chosen by a human</span><span><b>{{FOOTR}}</b></span></div>
+</div></body></html>
