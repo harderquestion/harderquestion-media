@@ -43,14 +43,15 @@ def render_reel(pg, post, out_dir, work):
         pg.evaluate(f"render({i/FPS})")
         pg.screenshot(path=os.path.join(frames, f"f_{i:04d}.jpg"), type="jpeg", quality=92)
     mp4 = os.path.join(out_dir, post["id"] + ".mp4")
+    pad = os.path.join(work, post["id"] + "_pad.m4a")
+    subprocess.run([sys.executable, os.path.join(HERE, "pad.py"), pad, str(SECS), str(post["day"])], check=True)
     subprocess.run([
         "ffmpeg", "-y", "-loglevel", "error",
         "-framerate", str(FPS), "-i", os.path.join(frames, "f_%04d.jpg"),
-        "-f", "lavfi", "-i", f"anoisesrc=color=brown:amplitude=0.02:duration={SECS}:sample_rate=44100:seed={post['day']}",
-        "-filter_complex", f"[1:a]lowpass=f=180,afade=t=in:d=1.5,afade=t=out:st={SECS-1.5}:d=1.5[a]",
-        "-map", "0:v", "-map", "[a]",
+        "-i", pad,
+        "-map", "0:v", "-map", "1:a",
         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "19", "-preset", "medium",
-        "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", "-shortest", mp4], check=True)
+        "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", "-shortest", mp4], check=True)
     shutil.rmtree(frames)
     # cover frame at 4.0s for thumbnail
     cover = os.path.join(out_dir, post["id"] + "_cover.jpg")
